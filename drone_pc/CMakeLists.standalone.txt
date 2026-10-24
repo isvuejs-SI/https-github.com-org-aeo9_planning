@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.8)
+project(drone_pc_standalone LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_library(drone_pc_core
+  src/planning/state_machine.cpp
+  src/planning/occupancy_map.cpp
+  src/planning/global_planner.cpp
+  src/planning/local_planner.cpp
+  src/planning/energy_planner.cpp
+  src/planning/escape_planner.cpp
+  src/control/px4_interface.cpp
+  src/control/link_loss.cpp
+  src/safety/preflight_gate.cpp
+  src/safety/alerts.cpp
+  src/safety/event_logger.cpp
+  src/params.cpp
+)
+target_include_directories(drone_pc_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+add_executable(drone_pc_cpp_tests tests/cpp/run_shared_tests.cpp)
+target_link_libraries(drone_pc_cpp_tests PRIVATE drone_pc_core)
+target_compile_definitions(drone_pc_cpp_tests PRIVATE
+  DRONE_PC_TEST_DIR="${CMAKE_CURRENT_SOURCE_DIR}/tests/shared")
