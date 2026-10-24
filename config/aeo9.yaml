@@ -1,0 +1,39 @@
+# AEO-9 supervisor limits (sim-only until hardware).
+# Integer units for deterministic twin Python/C++ math.
+# Planned home is south of Grand Canyon NP (36 CFR 1.5 — no unauthorized flights in park).
+
+seed: 42
+sim_only: true
+
+limits:
+  max_wind_cm_s: 1200          # 12.00 m/s
+  reserve_energy_mwh: 50000    # 50 Wh
+  geofence_radius_cm: 50000    # 500 m from home
+  min_altitude_agl_cm: 3000    # 30 m AGL
+
+energy:
+  capacity_mwh: 200000         # 200 Wh
+  hover_draw_mwh_per_s: 50
+  transit_draw_mwh_per_s: 80
+  film_draw_mwh_per_s: 70
+  solar_charge_mwh_per_s: 10
+
+mission:
+  animal_escape_climb_cm: 3500 # 35 m
+  animal_escape_stop_after: 3
+  filming_leg_mwh: 25000
+  return_leg_mwh: 30000
+
+home:
+  # ~Tusayan AZ vicinity — outside Grand Canyon National Park boundary
+  name: tusayan_staging
+  lat_e7: 358800000            # 35.8800000 N
+  lon_e7: -1121400000          # 112.1400000 W
+  alt_cm: 201000
+
+waypoints:
+  - {name: launch, north_cm: 0, east_cm: 0, alt_cm: 0, leg: launch}
+  - {name: transit_n, north_cm: 20000, east_cm: 5000, alt_cm: 5000, leg: transit}
+  - {name: film_a, north_cm: 25000, east_cm: 8000, alt_cm: 4500, leg: filming}
+  - {name: return_home, north_cm: 0, east_cm: 0, alt_cm: 0, leg: return}
+  - {name: overnight, north_cm: 0, east_cm: 0, alt_cm: 0, leg: overnight}

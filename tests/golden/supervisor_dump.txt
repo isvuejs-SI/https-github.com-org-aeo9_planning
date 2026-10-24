@@ -1,0 +1,49 @@
+AEO9_SUPERVISOR_V1
+seed=42
+sim_only=1
+max_wind_cm_s=1200
+reserve_energy_mwh=50000
+geofence_radius_cm=50000
+min_altitude_agl_cm=3000
+capacity_mwh=200000
+home=tusayan_staging
+home_lat_e7=358800000
+home_lon_e7=-1121400000
+waypoints=5
+energy_step E=100000 draw=50 solar=10 -> E=99960
+phases=launch,transit,filming,return,overnight
+leg_count=5
+leg name=launch type=launch n=0 e=0 alt=0 mwh=500
+leg name=transit_n type=transit n=20000 e=5000 alt=5000 mwh=1825
+leg name=film_a type=filming n=25000 e=8000 alt=4500 mwh=25065
+leg name=return_home type=return n=0 e=0 alt=0 mwh=30290
+leg name=overnight type=overnight n=0 e=0 alt=0 mwh=0
+total_energy_mwh=57680
+launch_gate ok=0 LAUNCH_BLOCKED E=99960 need+reserve=107680
+go_nogo=WAIT reason=battery E=99960<107680
+failsafe=RTL
+geofence status=INSIDE dist_cm=1500 radius_cm=50000
+geofence status=BREACH dist_cm=50100 radius_cm=50000
+ANIMAL_ESCAPE count=1 climb_cm=3500 filming=1
+ANIMAL_ESCAPE count=2 climb_cm=3500 filming=1
+ANIMAL_ESCAPE count=3 climb_cm=3500 filming=0
+animal escapes=3 filming=0 last_climb_cm=3500
+low_battery rtl=1 LOW_BATTERY_RTL E=80000<=80000
+ARMED
+DEPLOY_REFUSED_NOT_LANDED
+GEAR_DEPLOYED
+GEAR_STOWED
+ARMED
+gear stowed=1 armed=1 landed=0
+PX4_ARM
+PX4_TAKEOFF alt_cm=3000
+PX4_GOTO n=1000 e=2000 alt=3000
+PX4_HOLD
+PX4_RTL
+PX4_LAND
+ROS2_BATTERY pct=90 mv=21000
+ROS2_IMAGE w=640 h=480 ok=1
+CAMERA_TRIGGER n=1
+ROS2_STATUS state=RTL E=99960 alt=3000 film=0
+STARLINK=DOWN
+END
