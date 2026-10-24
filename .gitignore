@@ -1,0 +1,51 @@
+# Runtime artifacts — never commit (keep empty dirs via .gitkeep)
+logs/*
+!logs/.gitkeep
+keys/*
+!keys/.gitkeep
+footage/*
+!footage/.gitkeep
+*.log
+*.bag
+*.mcap
+*.ulg
+*.px4log
+
+# Secrets / credentials
+.env
+.env.*
+*.pem
+*.key
+!*.key.gitkeep
+secrets/
+credentials/
+*.secret
+
+# Build / test
+build/
+cmake-build-*/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+.venv/
+venv/
+.coverage
+htmlcov/
+.tox/
+.cache/
+compile_commands.json
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+
+# Generated golden diffs
+*.diff
+/tmp/
