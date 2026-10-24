@@ -19,8 +19,9 @@ def test_config_and_ci_scripts_exist():
 
 def test_gitignore_excludes_sensitive_paths():
     text = (ROOT / ".gitignore").read_text(encoding="utf-8")
-    for needle in ("logs/", "keys/", "footage/", "*.secret", ".env"):
+    for needle in ("logs/*", "keys/*", "footage/*", "*.secret", ".env"):
         assert needle in text
+
 
 
 def test_packages_import():
