@@ -1,0 +1,11 @@
+build/
+build_standalone/
+install/
+log/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/shared/python_results.json
+tests/shared/cpp_results.json
+*.a
+*.o

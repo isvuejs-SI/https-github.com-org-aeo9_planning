@@ -1,0 +1,71 @@
+# All operational limits for drone_pc. No magic numbers in code — load from here.
+drone_pc:
+  ros__parameters:
+    # --- Preflight gate ---
+    preflight.max_wind_mps: 12.0
+    preflight.max_cell_temp_c: 45.0
+    preflight.min_cell_temp_c: 5.0
+    preflight.min_soc_percent: 35.0
+    preflight.require_remote_id: true
+    preflight.require_geofence_ok: true
+    preflight.require_return_reserve: true
+
+    # --- Energy-aware planning ---
+    energy.wh_per_km: 80.0
+    energy.reserve_distance_factor: 1.3
+    energy.pack_reserve_fraction: 0.20
+    energy.pack_capacity_wh: 400.0
+    energy.escape_min_soc_percent: 30.0
+    energy.overnight_solar_wh_estimate: 120.0
+    energy.min_backup_landing_clearance_m: 15.0
+
+    # --- Map / occupancy ---
+    map.resolution_m: 1.0
+    map.size_x: 100
+    map.size_y: 100
+    map.size_z: 40
+    map.origin_x_m: -50.0
+    map.origin_y_m: -50.0
+    map.origin_z_m: 0.0
+    map.occupied_threshold: 0.65
+    map.moving_obstacle_inflate_m: 2.0
+
+    # --- Global planner ---
+    global_planner.heuristic_weight: 1.0
+    global_planner.max_expansions: 200000
+
+    # --- Local planner ---
+    local.max_speed_mps: 8.0
+    local.min_speed_mps: 0.5
+    local.max_altitude_m: 120.0
+    local.min_altitude_m: 5.0
+    local.obstacle_stop_distance_m: 4.0
+    local.obstacle_slow_distance_m: 12.0
+    local.vlos_max_range_m: 500.0
+    local.avoidance_lateral_step_m: 3.0
+
+    # --- Escape planner ---
+    escape.climb_altitude_m: 25.0
+    escape.watch_radius_m: 30.0
+    escape.deter_radius_m: 15.0
+    escape.escape_radius_m: 8.0
+    escape.prop_lockout_radius_m: 3.0
+
+    # --- PX4 control interface (requests only; PX4 owns failsafes) ---
+    control.offboard_rate_hz: 20.0
+    control.heartbeat_period_s: 0.05
+    control.heartbeat_miss_limit: 3
+    control.default_takeoff_altitude_m: 10.0
+
+    # --- Link loss ---
+    link_loss.rtl_after_s: 30.0
+    link_loss.abort_after_s: 600.0
+
+    # --- Alerts / logging ---
+    alerts.ntfy_base_url: "https://ntfy.sh"
+    alerts.ntfy_topic: "drone_pc_alerts"
+    alerts.duplicate_holdback_s: 60.0
+    alerts.enabled: true
+    logging.log_directory: "/tmp/drone_pc_logs"
+    logging.log_verdicts: true
+    logging.log_transitions: true

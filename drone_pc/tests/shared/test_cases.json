@@ -1,0 +1,401 @@
+{
+  "version": 1,
+  "description": "Shared test table for C++17 and Python drone_pc modules. Outputs must match exactly.",
+  "cases": [
+    {
+      "id": "sm_happy_path",
+      "module": "state_machine",
+      "input": {
+        "initial": "SLEEP_CHARGING",
+        "steps": [
+          {"to": "PREFLIGHT_GATE", "reason": "soc_charged"},
+          {"to": "TAKEOFF", "reason": "preflight_go"},
+          {"to": "CRUISE", "reason": "alt_reached"},
+          {"to": "SURVEY", "reason": "arrived_survey"},
+          {"to": "RETURN", "reason": "survey_complete"},
+          {"to": "LAND", "reason": "home_reached"},
+          {"to": "SLEEP_CHARGING", "reason": "landed"}
+        ]
+      },
+      "expect": {
+        "final": "SLEEP_CHARGING",
+        "ok": [true, true, true, true, true, true, true],
+        "reasons": [
+          "soc_charged",
+          "preflight_go",
+          "alt_reached",
+          "arrived_survey",
+          "survey_complete",
+          "home_reached",
+          "landed"
+        ]
+      }
+    },
+    {
+      "id": "sm_invalid_blocked",
+      "module": "state_machine",
+      "input": {
+        "initial": "SLEEP_CHARGING",
+        "steps": [{"to": "CRUISE", "reason": "illegal"}]
+      },
+      "expect": {
+        "final": "SLEEP_CHARGING",
+        "ok": [false],
+        "reasons": []
+      }
+    },
+    {
+      "id": "sm_escape_from_survey",
+      "module": "state_machine",
+      "input": {
+        "initial": "SURVEY",
+        "steps": [
+          {"to": "ESCAPE", "reason": "human_near"},
+          {"to": "LAND", "reason": "backup_reached"}
+        ]
+      },
+      "expect": {
+        "final": "LAND",
+        "ok": [true, true],
+        "reasons": ["human_near", "backup_reached"]
+      }
+    },
+    {
+      "id": "pf_all_go",
+      "module": "preflight",
+      "input": {
+        "wind_mps": 5.0,
+        "cell_temp_c": 25.0,
+        "soc_percent": 80.0,
+        "geofence_ok": true,
+        "remote_id_ok": true,
+        "return_reserve_ok": true,
+        "airborne": false
+      },
+      "expect": {"verdict": "GO", "reasons": []}
+    },
+    {
+      "id": "pf_wind_noground",
+      "module": "preflight",
+      "input": {
+        "wind_mps": 20.0,
+        "cell_temp_c": 25.0,
+        "soc_percent": 80.0,
+        "geofence_ok": true,
+        "remote_id_ok": true,
+        "return_reserve_ok": true,
+        "airborne": false
+      },
+      "expect": {"verdict": "NO_GO", "reasons": ["wind_exceeds_limit"]}
+    },
+    {
+      "id": "pf_worse_wins_airborne",
+      "module": "preflight",
+      "input": {
+        "wind_mps": 20.0,
+        "cell_temp_c": 50.0,
+        "soc_percent": 20.0,
+        "geofence_ok": false,
+        "remote_id_ok": false,
+        "return_reserve_ok": false,
+        "airborne": true
+      },
+      "expect": {
+        "verdict": "LAND_NOW",
+        "reasons": [
+          "wind_exceeds_limit",
+          "cell_temp_high",
+          "soc_below_min",
+          "geofence_violation",
+          "remote_id_failed",
+          "return_reserve_insufficient"
+        ]
+      }
+    },
+    {
+      "id": "pf_hold_soc",
+      "module": "preflight",
+      "input": {
+        "wind_mps": 3.0,
+        "cell_temp_c": 20.0,
+        "soc_percent": 10.0,
+        "geofence_ok": true,
+        "remote_id_ok": true,
+        "return_reserve_ok": true,
+        "airborne": false
+      },
+      "expect": {"verdict": "HOLD_GROUND", "reasons": ["soc_below_min"]}
+    },
+    {
+      "id": "energy_reserve_formula",
+      "module": "energy",
+      "input": {
+        "distance_to_home_km": 2.0,
+        "soc_percent": 100.0,
+        "remaining_mission_km": 0.0,
+        "overnight": false,
+        "current": [0.0, 0.0, 0.0],
+        "backups": [[30.0, 0.0, 0.0], [5.0, 0.0, 0.0]]
+      },
+      "expect": {
+        "return_reserve_wh": 288.0,
+        "available_wh": 400.0,
+        "return_reserve_ok": true,
+        "stay_overnight": false,
+        "backup_selected": true,
+        "backup": [30.0, 0.0, 0.0],
+        "reason": "energy_ok_backup_selected"
+      }
+    },
+    {
+      "id": "energy_overnight_solar",
+      "module": "energy",
+      "input": {
+        "distance_to_home_km": 5.0,
+        "soc_percent": 10.0,
+        "remaining_mission_km": 0.0,
+        "overnight": true,
+        "current": [0.0, 0.0, 0.0],
+        "backups": []
+      },
+      "expect": {
+        "return_reserve_wh": 600.0,
+        "available_wh": 40.0,
+        "return_reserve_ok": false,
+        "stay_overnight": false,
+        "backup_selected": false,
+        "backup": [0.0, 0.0, 0.0],
+        "reason": "overnight_return_preferred"
+      }
+    },
+    {
+      "id": "energy_overnight_ok",
+      "module": "energy",
+      "input": {
+        "distance_to_home_km": 0.5,
+        "soc_percent": 5.0,
+        "remaining_mission_km": 0.0,
+        "overnight": true,
+        "current": [0.0, 0.0, 0.0],
+        "backups": []
+      },
+      "expect": {
+        "return_reserve_wh": 132.0,
+        "available_wh": 20.0,
+        "return_reserve_ok": false,
+        "stay_overnight": true,
+        "backup_selected": false,
+        "backup": [0.0, 0.0, 0.0],
+        "reason": "overnight_solar_ok"
+      }
+    },
+    {
+      "id": "escape_classify",
+      "module": "escape_classify",
+      "input": {"distances_m": [50.0, 25.0, 12.0, 5.0, 1.0]},
+      "expect": {
+        "verdicts": ["STAY", "WATCH", "DETER", "ESCAPE", "PROP_LOCKOUT"]
+      }
+    },
+    {
+      "id": "escape_execute",
+      "module": "escape",
+      "input": {
+        "threat": "ESCAPE",
+        "soc_percent": 50.0,
+        "cover_open": true,
+        "wind_ok": true,
+        "current": [0.0, 0.0, 0.0],
+        "backup": [40.0, 10.0, 0.0],
+        "backup_valid": true
+      },
+      "expect": {
+        "action": "ESCAPE",
+        "execute_escape": true,
+        "target": [40.0, 10.0, 25.0],
+        "reason": "escape_to_backup"
+      }
+    },
+    {
+      "id": "escape_blocked_soc",
+      "module": "escape",
+      "input": {
+        "threat": "ESCAPE",
+        "soc_percent": 20.0,
+        "cover_open": true,
+        "wind_ok": true,
+        "current": [0.0, 0.0, 0.0],
+        "backup": [40.0, 10.0, 0.0],
+        "backup_valid": true
+      },
+      "expect": {
+        "action": "ESCAPE",
+        "execute_escape": false,
+        "target": [0.0, 0.0, 0.0],
+        "reason": "escape_blocked_soc"
+      }
+    },
+    {
+      "id": "escape_prop_lockout",
+      "module": "escape",
+      "input": {
+        "threat": "PROP_LOCKOUT",
+        "soc_percent": 80.0,
+        "cover_open": true,
+        "wind_ok": true,
+        "current": [1.0, 2.0, 0.0],
+        "backup": [40.0, 10.0, 0.0],
+        "backup_valid": true
+      },
+      "expect": {
+        "action": "PROP_LOCKOUT",
+        "execute_escape": false,
+        "target": [1.0, 2.0, 0.0],
+        "reason": "prop_lockout_hold"
+      }
+    },
+    {
+      "id": "link_loss_timeline",
+      "module": "link_loss",
+      "input": {
+        "steps": [
+          {"dt_s": 10.0, "link_ok": false},
+          {"dt_s": 25.0, "link_ok": false},
+          {"dt_s": 600.0, "link_ok": false}
+        ]
+      },
+      "expect": {
+        "actions": ["NONE", "RTL", "ABORT_MISSION"],
+        "reasons": ["link_loss_pending", "link_loss_rtl", "link_loss_abort"]
+      }
+    },
+    {
+      "id": "link_loss_recover",
+      "module": "link_loss",
+      "input": {
+        "steps": [
+          {"dt_s": 40.0, "link_ok": false},
+          {"dt_s": 1.0, "link_ok": true},
+          {"dt_s": 10.0, "link_ok": false}
+        ]
+      },
+      "expect": {
+        "actions": ["RTL", "NONE", "NONE"],
+        "reasons": ["link_loss_rtl", "link_ok", "link_loss_pending"]
+      }
+    },
+    {
+      "id": "alerts_holdback",
+      "module": "alerts",
+      "input": {
+        "events": [
+          {"key": "rtl", "message": "RTL", "t": 0.0},
+          {"key": "rtl", "message": "RTL again", "t": 30.0},
+          {"key": "rtl", "message": "RTL later", "t": 61.0},
+          {"key": "land", "message": "LAND", "t": 62.0}
+        ]
+      },
+      "expect": {
+        "sent": [true, false, true, true],
+        "reasons": ["sent_stub", "duplicate_holdback", "sent_stub", "sent_stub"]
+      }
+    },
+    {
+      "id": "px4_requests_only",
+      "module": "px4",
+      "input": {
+        "requests": ["ARM", "TAKEOFF", "HOLD", "RTL", "LAND"],
+        "heartbeat_gap_s": 0.2
+      },
+      "expect": {
+        "log": ["ARM", "TAKEOFF", "HOLD", "RTL", "LAND"],
+        "heartbeat_ok": false,
+        "fallback": "hold_or_rtl"
+      }
+    },
+    {
+      "id": "map_thermal_obstacle",
+      "module": "occupancy",
+      "input": {
+        "points": [[0.5, 0.5, 5.5]],
+        "moving": [{"pos": [10.5, 10.5, 5.5], "label": "person", "radius_m": 1.0}],
+        "check": [[0.5, 0.5, 5.5], [10.5, 10.5, 5.5], [20.5, 20.5, 5.5]]
+      },
+      "expect": {"occupied": [true, true, false]}
+    },
+    {
+      "id": "global_astar_clear",
+      "module": "global_planner",
+      "input": {
+        "start": [-40.0, -40.0, 10.0],
+        "goal": [-30.0, -40.0, 10.0],
+        "block": []
+      },
+      "expect": {
+        "success": true,
+        "reason": "ok",
+        "path_len_min": 2,
+        "first": [-39.5, -39.5, 10.5],
+        "last": [-29.5, -39.5, 10.5]
+      }
+    },
+    {
+      "id": "global_astar_blocked_goal",
+      "module": "global_planner",
+      "input": {
+        "start": [-40.0, -40.0, 10.0],
+        "goal": [-30.0, -40.0, 10.0],
+        "block": [[-30.0, -40.0, 10.0]]
+      },
+      "expect": {
+        "success": false,
+        "reason": "goal_not_traversable",
+        "path_len_min": 0,
+        "first": [0.0, 0.0, 0.0],
+        "last": [0.0, 0.0, 0.0]
+      }
+    },
+    {
+      "id": "local_clear",
+      "module": "local_planner",
+      "input": {
+        "position": [0.0, 0.0, 10.0],
+        "goal": [20.0, 0.0, 10.0],
+        "home": [0.0, 0.0, 0.0],
+        "block": []
+      },
+      "expect": {
+        "stop": false,
+        "reason": "clear",
+        "speed_mps": 8.0
+      }
+    },
+    {
+      "id": "local_vlos",
+      "module": "local_planner",
+      "input": {
+        "position": [600.0, 0.0, 10.0],
+        "goal": [700.0, 0.0, 10.0],
+        "home": [0.0, 0.0, 0.0],
+        "block": []
+      },
+      "expect": {
+        "stop": false,
+        "reason": "vlos_limit_return_home_direction",
+        "speed_mps": 0.5
+      }
+    },
+    {
+      "id": "logger_events",
+      "module": "logger",
+      "input": {
+        "verdicts": [{"t": 1.0, "payload": "GO"}],
+        "transitions": [{"t": 2.0, "payload": "SLEEP_CHARGING->PREFLIGHT_GATE:soc_charged"}]
+      },
+      "expect": {
+        "categories": ["verdict", "transition"],
+        "payloads": ["GO", "SLEEP_CHARGING->PREFLIGHT_GATE:soc_charged"]
+      }
+    }
+  ]
+}
