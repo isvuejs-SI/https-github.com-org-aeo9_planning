@@ -1,0 +1,112 @@
+# All flight limits live here. Planning and control code reads this file.
+# Values are operator defaults for the supervisor, not PX4 failsafe parameters.
+# PX4 on the Pixhawk keeps its own failsafe parameters.
+
+wind:
+  go_max_mps: 6.0
+  hold_max_mps: 10.0
+
+temperature:
+  no_go_low_c: -20.0
+  land_now_low_c: -10.0
+  hold_low_c: 0.0
+  hold_high_c: 45.0
+  land_now_high_c: 55.0
+  no_go_high_c: 60.0
+
+battery:
+  pack_capacity_wh: 500.0
+  wh_per_km: 25.0
+  return_distance_factor: 1.3
+  pack_reserve_fraction: 0.2
+  soc_go_min: 0.8
+  soc_hold_min: 0.5
+  soc_rtl_min: 0.3
+  escape_min_soc: 0.3
+
+# Replace the example square with the real operating fence before any flight.
+geofence:
+  polygon:
+    - x: 0.0
+      y: 0.0
+    - x: 400.0
+      y: 0.0
+    - x: 400.0
+      y: 400.0
+    - x: 0.0
+      y: 400.0
+
+no_fly:
+  - name: example_nest
+    polygon:
+      - x: 200.0
+        y: 200.0
+      - x: 220.0
+        y: 200.0
+      - x: 220.0
+        y: 220.0
+      - x: 200.0
+        y: 220.0
+
+altitude:
+  min_m: 5.0
+  max_m: 120.0
+
+speed:
+  max_mps: 12.0
+  cruise_mps: 8.0
+  survey_mps: 3.0
+  takeoff_mps: 2.0
+  escape_mps: 4.0
+  return_mps: 8.0
+  land_mps: 1.5
+  slow_radius_m: 5.0
+
+local:
+  lookahead_cells: 4
+
+vlos:
+  max_range_m: 500.0
+
+heartbeat:
+  rate_hz: 10.0
+  timeout_s: 1.0
+
+link:
+  rtl_after_s: 30.0
+  abort_after_s: 600.0
+
+ntfy:
+  base_url: "https://ntfy.sh"
+  topic: "drone-pc-alerts"
+  cooldown_s: 60.0
+  enable_send: false
+
+logging:
+  directory: "logs"
+
+escape:
+  watch_range_m: 15.0
+  deter_range_m: 8.0
+  escape_range_m: 4.0
+  prop_lockout_range_m: 2.0
+  climb_m: 15.0
+  max_wind_mps: 5.0
+
+grid:
+  resolution_m: 1.0
+  inflation_m: 0.0
+  predict_steps: 3
+  predict_dt_s: 1.0
+  size_x: 80
+  size_y: 80
+  size_z: 30
+  origin_x_m: -20.0
+  origin_y_m: -20.0
+  origin_z_m: 0.0
+
+topics:
+  pointcloud: "/livox/lidar"
+  thermal: "/thermal/detections"
+  link: "/link/up"
+  px4_request: "/drone_pc/px4_request"
