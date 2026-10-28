@@ -1,0 +1,5 @@
+A_landed_charging_ok: ALLOW
+B_in_flight: DENY armed,not_landed,not_charging
+C_landed_low_batt: DENY battery_low
+D_bad_sig_full_disk: DENY nvme_full,bad_signature
+E_landed_no_solar: DENY not_charging

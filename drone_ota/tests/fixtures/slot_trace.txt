@@ -1,0 +1,11 @@
+rollback ALLOW wrote_slot=B keep_slot=A
+rollback BOOT pending=B active=A
+rollback HEALTH_FAIL boot_loop=1 action=RETRY pending=B active=A
+rollback HEALTH_FAIL boot_loop=2 action=RETRY pending=B active=A
+rollback HEALTH_FAIL boot_loop=3 action=ROLLBACK active=A
+deny DENY battery_low
+commit ALLOW wrote_slot=B keep_slot=A
+commit BOOT pending=B active=A
+commit HEALTH_PASS
+commit COMMIT active=B
+commit ALLOW wrote_slot=A keep_slot=B

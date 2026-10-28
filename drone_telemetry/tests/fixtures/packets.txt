@@ -1,0 +1,5 @@
+AUTO|82|48|40|10|1|NONE|mode=AUTO battery_pct=82.0 jetson=OK thermal=OK detection=1 failsafe=NONE
+LOITER|41|71|40|10|0|NONE|mode=LOITER battery_pct=41.0 jetson=WARN thermal=WARM detection=0 failsafe=NONE
+RTL|20|81|40|10|1|RTL|mode=RTL battery_pct=20.0 jetson=FAIL thermal=HOT detection=1 failsafe=RTL
+AUTO|90|60|14|10|1|NONE|mode=AUTO battery_pct=90.0 jetson=WARN thermal=OK detection=1 failsafe=NONE
+AUTO|90|60|40|81|0|NONE|mode=AUTO battery_pct=90.0 jetson=FAIL thermal=OK detection=0 failsafe=NONE

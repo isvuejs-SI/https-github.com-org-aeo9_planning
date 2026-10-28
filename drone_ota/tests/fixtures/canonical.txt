@@ -1,0 +1,7 @@
+DRONEOTA1
+version=1.3.0
+hardware=jetson-orin
+min_compatible=1.0.0
+max_compatible=1.3.0
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  1 a.txt
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  2 b.txt

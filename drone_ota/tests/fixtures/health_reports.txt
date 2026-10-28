@@ -1,0 +1,81 @@
+=== all_ok
+nodes=PASS
+mavlink_heartbeat=PASS
+sensors=PASS
+tensorrt=SKIP no_nvcc_or_gpu
+nvme=PASS
+time_sync=PASS
+boot_failures=0
+action=OK
+=== missing_logger
+nodes=FAIL missing=logger
+mavlink_heartbeat=PASS
+sensors=PASS
+tensorrt=SKIP no_nvcc_or_gpu
+nvme=PASS
+time_sync=PASS
+boot_failures=1
+action=RETRY
+=== rollback_nvme
+nodes=PASS
+mavlink_heartbeat=PASS
+sensors=PASS
+tensorrt=SKIP no_nvcc_or_gpu
+nvme=FAIL
+time_sync=PASS
+boot_failures=3
+action=ROLLBACK
+=== time_fail
+nodes=PASS
+mavlink_heartbeat=PASS
+sensors=PASS
+tensorrt=SKIP no_nvcc_or_gpu
+nvme=PASS
+time_sync=FAIL
+boot_failures=1
+action=RETRY
+=== heartbeat_fail
+nodes=PASS
+mavlink_heartbeat=FAIL
+sensors=PASS
+tensorrt=SKIP no_nvcc_or_gpu
+nvme=PASS
+time_sync=PASS
+boot_failures=1
+action=RETRY
+=== sensor_fail
+nodes=PASS
+mavlink_heartbeat=PASS
+sensors=FAIL missing=camera
+tensorrt=SKIP no_nvcc_or_gpu
+nvme=PASS
+time_sync=PASS
+boot_failures=1
+action=RETRY
+=== both_sensors
+nodes=PASS
+mavlink_heartbeat=PASS
+sensors=FAIL missing=camera+mid360
+tensorrt=SKIP no_nvcc_or_gpu
+nvme=PASS
+time_sync=PASS
+boot_failures=1
+action=RETRY
+=== cuda_unlinked
+nodes=PASS
+mavlink_heartbeat=PASS
+sensors=PASS
+tensorrt=SKIP cuda_runtime_not_linked
+nvme=PASS
+time_sync=PASS
+boot_failures=0
+action=OK
+=== tensorrt_required
+nodes=PASS
+mavlink_heartbeat=PASS
+sensors=PASS
+tensorrt=SKIP no_nvcc_or_gpu
+nvme=PASS
+time_sync=PASS
+boot_failures=1
+action=RETRY

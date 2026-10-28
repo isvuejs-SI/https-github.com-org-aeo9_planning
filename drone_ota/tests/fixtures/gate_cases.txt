@@ -1,0 +1,19 @@
+# name|armed|landed|batt|charging|nvme|temp|failsafe|sig|reasons
+# The first five rows are the starter tests. A-E are the design-doc printout.
+allow|0|1|82|1|140|48|0|1|
+in_flight|1|0|82|1|140|48|0|1|armed,not_landed
+low_battery|0|1|41|1|140|48|0|1|battery_low
+bad_sig_and_disk|0|1|82|1|8|48|0|0|nvme_full,bad_signature
+failsafe_blocks|0|1|82|1|140|48|1|1|failsafe_active
+A_landed_charging_ok|0|1|82|1|140|48|0|1|
+B_in_flight|1|0|75|0|140|55|0|1|armed,not_landed,not_charging
+C_landed_low_batt|0|1|41|1|140|45|0|1|battery_low
+D_bad_sig_full_disk|0|1|90|1|8|45|0|0|nvme_full,bad_signature
+E_landed_no_solar|0|1|88|0|140|45|0|1|not_charging
+too_hot|0|1|82|1|140|71|0|1|too_hot
+temp_at_limit|0|1|82|1|140|70|0|1|
+batt_at_limit|0|1|60|1|140|48|0|1|
+batt_below|0|1|59.9|1|140|48|0|1|battery_low
+nvme_at_limit|0|1|82|1|20|48|0|1|
+nvme_below|0|1|82|1|19.9|48|0|1|nvme_full
+armed_on_ground|1|1|82|1|140|48|0|1|armed
