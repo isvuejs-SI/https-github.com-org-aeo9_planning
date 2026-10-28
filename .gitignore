@@ -1,0 +1,31 @@
+# build outputs
+failsafe/failsafe_sim
+mission_l17/aeo9_mission
+day3_l18/aeo9_day3
+sim/run_stack
+tests/stack_test
+*.o
+build/
+__pycache__/
+*.pyc
+# generated CI output
+*/py.txt
+*/cpp.txt
+*/budget_*.csv
+# logs
+logs/
+*.log
+runs/*.csv
+# footage
+footage/
+*.mp4
+*.mov
+*.jpg
+*.png
+*.bag
+*.mcap
+# keys / secrets
+.env
+*.pem
+*.key
+secrets/

@@ -1,0 +1,11 @@
+# scenario first-trigger done-tick
+nominal MISSION_END@3000 done@5390
+animal ANIMAL@1010 done@4083
+false_positive MISSION_END@3000 done@5390
+geofence GEOFENCE@1667 done@4258
+low_battery BATT_LOW@1750 done@4140
+gps_loss GPS_LOSS@2099 done@3488
+link_loss LINK_LOSS@2149 done@4539
+dropout_short ANIMAL@1635 done@4900
+dropout_long DET_STALE@1695 done@4085
+wind_gust MISSION_END@3000 done@5396

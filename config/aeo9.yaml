@@ -1,0 +1,53 @@
+# AEO-9 supervisor config.
+# Illustrative placeholders, not real AEO-9 specs.
+# Simulation only. PX4 keeps its own failsafes; the supervisor only requests modes or waypoints.
+# Route offsets are relative meters from a base outside Grand Canyon National Park (36 CFR 1.5).
+safety:
+  simulation_only: 1
+  px4_failsafe_owner: px4
+  supervisor: request_only
+energy_dwh:
+  capacity: 4000
+  launch_reserve: 800
+  flight_floor: 600
+draw_dwh_per_min:
+  cruise: 100
+  film: 90
+  escape: 140
+  idle: 1
+  uplink: 4
+solar:
+  peak_dwh_per_min: 10
+  sunrise_min: 390
+  sunset_min: 1080
+  noon_min: 735
+limits:
+  wind_max_ms: 11
+  gust_abort_ms: 14
+  geofence_radius_m: 1500
+  min_agl_m: 40
+  alt_m: 110
+  speed_m_per_min: 600
+escape:
+  climb_m: 35
+  max_count: 3
+  conf_min_permille: 600
+gear:
+  stow_min: 3
+  deploy_min: 3
+film:
+  minutes: 8
+  cam_fail_limit: 3
+  target_m: 600
+upload:
+  need_min: 10
+  outage_giveup_min: 8
+route:
+  park: outside_grand_canyon_np
+  home_m: 0
+  camp_m: 600
+planner:
+  out_film_min: 12
+  hover_film_min: 12
+  home_film_min: 5
+  escape_budget: 3

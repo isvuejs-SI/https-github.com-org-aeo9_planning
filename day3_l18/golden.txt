@@ -1,0 +1,58 @@
+# nominal dawn_soc=3200 need=2330+800
+  D3 10:29 GO soc=3131
+  D3 10:52 RTL camp2 (film done) film=15 min
+  D3 10:57 LANDED camp2
+  D3 12:00 UPLOAD done
+  D3 23:59 soc=1815
+  dets=0 esc=0 triggers=15 min_soc=1073 min_agl=45 D4_08:00 soc=1412 need=3080 -> D4_GO D4 13:14
+  PASS
+# gust_filming dawn_soc=3200 need=2330+800
+  D3 10:29 GO soc=3131
+  D3 10:49 RTL camp2 (gust 150 dm/s) film=12 min
+  D3 10:54 LANDED camp2
+  D3 11:57 UPLOAD done
+  D3 23:59 soc=2040
+  dets=1 esc=0 triggers=12 min_soc=1283 min_agl=45 D4_08:00 soc=1637 need=3080 -> D4_GO D4 12:42
+  PASS
+# repeat_escapes dawn_soc=3200 need=2330+800
+  D3 10:29 GO soc=3131
+  D3 10:39 ESCAPE #1 climb +35 m
+  D3 10:41 ESCAPE #2 climb +35 m
+  D3 10:48 ESCAPE #3 climb +35 m
+  D3 10:48 RTL camp2 (escape limit) film=11 min
+  D3 10:53 LANDED camp2
+  D3 11:56 UPLOAD done
+  D3 23:59 soc=1905
+  dets=5 esc=3 triggers=11 min_soc=1143 min_agl=45 D4_08:00 soc=1502 need=3080 -> D4_GO D4 13:01
+  PASS
+# starlink_outage dawn_soc=3200 need=2330+800
+  D3 10:29 GO soc=3131
+  D3 10:52 RTL camp2 (film done) film=15 min
+  D3 10:57 LANDED camp2
+  D3 14:29 UPLOAD done
+  D3 23:59 soc=1815
+  dets=0 esc=0 triggers=15 min_soc=1073 min_agl=45 D4_08:00 soc=1412 need=3080 -> D4_GO D4 13:14
+  PASS
+# cloudy_afternoon dawn_soc=3200 need=2330+800
+  D3 10:29 GO soc=3131
+  D3 10:52 RTL camp2 (film done) film=15 min
+  D3 10:57 LANDED camp2
+  D3 12:00 UPLOAD done
+  D3 23:59 soc=1198
+  dets=0 esc=0 triggers=15 min_soc=773 min_agl=45 D4_08:00 soc=795 need=3080 -> D4_HOLD_CHARGE
+  PASS
+# camera_trigger_fail dawn_soc=3200 need=2330+800
+  D3 10:29 GO soc=3131
+  D3 10:43 ESCAPE #1 climb +35 m
+  D3 10:46 RTL camp2 (camera trigger fail x3) film=9 min
+  D3 10:51 LANDED camp2
+  D3 11:54 UPLOAD done
+  D3 23:59 soc=2195
+  dets=1 esc=1 triggers=9 min_soc=1423 min_agl=49 D4_08:00 soc=1792 need=3080 -> D4_GO D4 12:23
+  PASS
+# behind_schedule dawn_soc=3200 need=2330+800
+  D3 08:01 SKIP day3 (behind schedule)
+  D3 23:59 soc=3537
+  dets=0 esc=0 triggers=0 min_soc=2775 min_agl=- D4_08:00 soc=3134 need=3080 -> D4_GO D4 08:00
+  PASS
+TOTAL pass=7/7
