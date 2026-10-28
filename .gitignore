@@ -2,6 +2,8 @@
 failsafe/failsafe_sim
 mission_l17/aeo9_mission
 day3_l18/aeo9_day3
+sim/run_stack
+tests/stack_test
 *.o
 build/
 __pycache__/

@@ -9,13 +9,19 @@
 
 ## Layout
 ```
-failsafe/     drone failsafe gate sim (failsafe_sim.py/.cpp, drone_failsafe_gate.yaml, golden.txt, run_ci.sh)
-mission_l17/  Lesson 17 five-day mission sim (aeo9_mission.*)
-day3_l18/     Lesson 18 Day 3 filming-day sim (aeo9_day3.*, writes budget CSVs)
-docs/lessons/ lesson write-ups (failsafe guide, L17, L18)
-run_ci.sh     runs all three parts' CI
-CURSOR_TASKS.md  ordered build tasks for Cursor
-.cursorrules  project rules for Cursor
+config/aeo9.yaml   shared placeholders (wind, reserve, fence, min AGL, route outside the park)
+planner/           YAML loader, energy step, leg/day planner (Python + C++17 headers)
+control/           go/no-go, latched failsafe, geofence, escape, low-battery return,
+                   gear/solar sequence, PX4 mock, ROS 2 mock
+sim/               seven-scenario sortie runner and per-minute CSV
+tests/             one printed check per behavior; Python/C++ diff
+failsafe/          reference failsafe gate sim (unchanged)
+mission_l17/       reference five-day mission sim (unchanged)
+day3_l18/          reference Day 3 filming sim (unchanged)
+docs/lessons/      lesson write-ups
+run_ci.sh          runs the reference sims plus tests/ and sim/
+CURSOR_TASKS.md    ordered build tasks
+.cursorrules       project rules
 ```
 
 ## Requirements
@@ -26,8 +32,12 @@ python3, g++ with C++17, bash.
 python3 failsafe/failsafe_sim.py
 python3 mission_l17/aeo9_mission.py
 python3 day3_l18/aeo9_day3.py out.csv
+python3 tests/stack_test.py
+python3 sim/run_stack.py sim/budget.csv
 ```
-CI per part: `bash failsafe/run_ci.sh`, `bash mission_l17/run_ci.sh`, `bash day3_l18/run_ci.sh` (each builds the C++ twin, diffs it against Python and the golden file).
+CI per part: `bash failsafe/run_ci.sh`, `bash mission_l17/run_ci.sh`, `bash day3_l18/run_ci.sh`, `bash tests/run_ci.sh`, `bash sim/run_ci.sh`. Each builds the C++ twin and diffs it against Python. Mission, Day 3, `tests/`, and `sim/` also diff a golden file. `sim/` compares the per-minute CSV as well.
+
+The supervisor only requests arm, takeoff, goto, hold, return, or land. The PX4 and ROS 2 pieces are in-process mocks: they do not open a socket, link MAVSDK, or start a ROS graph. PX4 keeps its own failsafes.
 
 ## Run all CI
 ```

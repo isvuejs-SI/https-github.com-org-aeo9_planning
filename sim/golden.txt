@@ -1,0 +1,120 @@
+AEO-9 planning stack (illustrative placeholders, simulation only, outside Grand Canyon NP)
+cfg wind_max_ms=11 reserve_dwh=800 geofence_radius_m=1500 min_agl_m=40
+scenario 0 nominal
+  t=0480 GO ok soc=3600
+  t=0482 STOW OK stowed
+  t=0482 ARM ACK mode=ARMED
+  t=0482 TAKEOFF ACK alt=110
+  t=0482 GOTO ACK x=600 y=0 z=110
+  t=0483 DEPLOY REFUSE not_landed
+  t=0484 FILM start x=600
+  t=0491 END film_done film=8 fs=NOMINAL
+  t=0492 RETURN ACK reason=film_done
+  t=0492 HOME
+  t=0493 LAND ACK mode=LAND
+  t=0493 DEPLOY OK deploying
+  t=0496 DEPLOY OK deployed
+  t=0506 UPLOAD done
+  RESULT nominal fs=NOMINAL reason=film_done film=8 esc=0 fails=0 breach=0 upload=done min_soc=2554 min_agl=105 end=0,0 gear=DEPLOYED refuse=1 px4=5 rng=118329302 PASS
+scenario 1 gust
+  t=0480 GO ok soc=3600
+  t=0482 STOW OK stowed
+  t=0482 ARM ACK mode=ARMED
+  t=0482 TAKEOFF ACK alt=110
+  t=0482 GOTO ACK x=600 y=0 z=110
+  t=0483 DEPLOY REFUSE not_landed
+  t=0484 FILM start x=600
+  t=0487 END gust film=4 fs=RTL
+  t=0488 RETURN ACK reason=gust
+  t=0488 HOME
+  t=0489 LAND ACK mode=LAND
+  t=0489 DEPLOY OK deploying
+  t=0492 DEPLOY OK deployed
+  t=0502 UPLOAD done
+  RESULT gust fs=RTL reason=gust film=4 esc=0 fails=0 breach=0 upload=done min_soc=2913 min_agl=105 end=0,0 gear=DEPLOYED refuse=1 px4=5 rng=98206889 PASS
+scenario 2 low_battery
+  t=0480 GO ok soc=2500
+  t=0482 STOW OK stowed
+  t=0482 ARM ACK mode=ARMED
+  t=0482 TAKEOFF ACK alt=110
+  t=0482 GOTO ACK x=600 y=0 z=110
+  t=0483 DEPLOY REFUSE not_landed
+  t=0484 FILM start x=600
+  t=0489 BATTERY RTL soc=1047 cost=300
+  t=0489 RETURN ACK reason=battery
+  t=0489 HOME
+  t=0490 LAND ACK mode=LAND
+  t=0490 DEPLOY OK deploying
+  t=0493 DEPLOY OK deployed
+  t=0503 UPLOAD done
+  RESULT low_battery fs=RTL reason=battery film=5 esc=0 fails=0 breach=0 upload=done min_soc=824 min_agl=105 end=0,0 gear=DEPLOYED refuse=1 px4=5 rng=100055220 PASS
+scenario 3 geofence_drift
+  t=0480 GO ok soc=3600
+  t=0482 STOW OK stowed
+  t=0482 ARM ACK mode=ARMED
+  t=0482 TAKEOFF ACK alt=110
+  t=0482 GOTO ACK x=600 y=0 z=110
+  t=0483 DEPLOY REFUSE not_landed
+  t=0483 GEOFENCE x=600 y=1600 -> RTL
+  t=0484 RETURN ACK reason=geofence
+  t=0487 HOME
+  t=0488 LAND ACK mode=LAND
+  t=0488 DEPLOY OK deploying
+  t=0491 DEPLOY OK deployed
+  t=0501 UPLOAD done
+  RESULT geofence_drift fs=RTL reason=geofence film=0 esc=0 fails=0 breach=1 upload=done min_soc=2972 min_agl=105 end=0,0 gear=DEPLOYED refuse=1 px4=5 rng=83823459 PASS
+scenario 4 repeated_escapes
+  t=0480 GO ok soc=3600
+  t=0482 STOW OK stowed
+  t=0482 ARM ACK mode=ARMED
+  t=0482 TAKEOFF ACK alt=110
+  t=0482 GOTO ACK x=600 y=0 z=110
+  t=0483 DEPLOY REFUSE not_landed
+  t=0484 FILM start x=600
+  t=0484 ESCAPE #1 climb +35 m
+  t=0485 ESCAPE #2 climb +35 m
+  t=0486 ESCAPE #3 climb +35 m
+  t=0486 END escape film=3 fs=RTL
+  t=0487 RETURN ACK reason=escape
+  t=0487 HOME
+  t=0488 LAND ACK mode=LAND
+  t=0488 DEPLOY OK deploying
+  t=0491 DEPLOY OK deployed
+  t=0501 UPLOAD done
+  RESULT repeated_escapes fs=RTL reason=escape film=3 esc=3 fails=0 breach=0 upload=done min_soc=2852 min_agl=105 end=0,0 gear=DEPLOYED refuse=1 px4=5 rng=84031188 PASS
+scenario 5 camera_failure
+  t=0480 GO ok soc=3600
+  t=0482 STOW OK stowed
+  t=0482 ARM ACK mode=ARMED
+  t=0482 TAKEOFF ACK alt=110
+  t=0482 GOTO ACK x=600 y=0 z=110
+  t=0483 DEPLOY REFUSE not_landed
+  t=0484 FILM start x=600
+  t=0484 TRIGGER NACK fails=1
+  t=0485 TRIGGER NACK fails=2
+  t=0486 TRIGGER NACK fails=3
+  t=0486 END camera film=3 fs=RTL
+  t=0487 RETURN ACK reason=camera
+  t=0487 HOME
+  t=0488 LAND ACK mode=LAND
+  t=0488 DEPLOY OK deploying
+  t=0491 DEPLOY OK deployed
+  t=0501 UPLOAD done
+  RESULT camera_failure fs=RTL reason=camera film=3 esc=0 fails=3 breach=0 upload=done min_soc=3002 min_agl=105 end=0,0 gear=DEPLOYED refuse=1 px4=5 rng=109404742 PASS
+scenario 6 starlink_outage
+  t=0480 GO ok soc=3600
+  t=0482 STOW OK stowed
+  t=0482 ARM ACK mode=ARMED
+  t=0482 TAKEOFF ACK alt=110
+  t=0482 GOTO ACK x=600 y=0 z=110
+  t=0483 DEPLOY REFUSE not_landed
+  t=0484 FILM start x=600
+  t=0491 END film_done film=8 fs=NOMINAL
+  t=0492 RETURN ACK reason=film_done
+  t=0492 HOME
+  t=0493 LAND ACK mode=LAND
+  t=0493 DEPLOY OK deploying
+  t=0496 DEPLOY OK deployed
+  t=0504 UPLOAD deferred
+  RESULT starlink_outage fs=NOMINAL reason=film_done film=8 esc=0 fails=0 breach=0 upload=deferred min_soc=2574 min_agl=105 end=0,0 gear=DEPLOYED refuse=1 px4=5 rng=105774868 PASS
+TOTAL pass=7/7

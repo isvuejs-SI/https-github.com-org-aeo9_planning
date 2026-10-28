@@ -1,0 +1,84 @@
+cfg-wind 11 PASS
+cfg-reserve 800 PASS
+cfg-fence 1500 PASS
+cfg-min-agl 40 PASS
+cfg-park outside_grand_canyon_np PASS
+cfg-sim 1 PASS
+cfg-owner px4 PASS
+cfg-supervisor request_only PASS
+energy-next 80 PASS
+energy-floor 0 PASS
+energy-cap 4000 PASS
+sortie-need 1540 PASS
+launch-yes 1 PASS
+launch-no 0 PASS
+solar-480 2 PASS
+leg-names out,film,home PASS
+leg-opt 0,1,0 PASS
+leg-camp 600 PASS
+leg-out 1700 PASS
+leg-film 1600 PASS
+leg-home 1070 PASS
+plan-full launch,transit,filming,return,transit,filming,return,transit,filming,return,overnight PASS
+plan-drop launch,transit,filming,return,transit,filming,return,overnight PASS
+gate-order WAIT wind PASS
+gate-battery WAIT battery PASS
+gate-schedule SKIP schedule PASS
+gate-fence SKIP fence PASS
+gate-circle GO ok PASS
+gate-wind-eq GO ok PASS
+gate-energy-eq GO ok PASS
+fs-hold HOLD PASS
+fs-latch-hold HOLD PASS
+fs-rtl RTL PASS
+fs-latch-rtl RTL PASS
+fs-land LAND PASS
+fs-latch-land LAND PASS
+fs-land-rtl LAND PASS
+dist2-345 25 PASS
+fence-home 0 PASS
+fence-edge 0 PASS
+fence-out 1 PASS
+fence-corner 0 PASS
+fence-corner-out 1 PASS
+esc-idle 0,0,0,not_filming PASS
+esc-far 0,0,0,ignore PASS
+esc-low 0,0,0,ignore PASS
+esc-climb 1,35,0,climb PASS
+esc-stop 3,35,1,climb PASS
+bat-ok OK PASS
+bat-eq RTL PASS
+bat-floor LAND PASS
+bat-crit LAND PASS
+gear-arm-early REFUSE not_stowed PASS
+gear-stow OK stowing PASS
+gear-arm-stowing REFUSE not_stowed PASS
+gear-stow-done OK stowed PASS
+gear-arm OK armed PASS
+gear-deploy-air REFUSE not_landed PASS
+gear-stow-air REFUSE airborne PASS
+gear-phase-air STOWED PASS
+gear-deploy-ground OK deploying PASS
+gear-deploy-finish OK deployed PASS
+px4-connect REFUSE simulation_only PASS
+px4-takeoff-early REFUSE not_armed PASS
+px4-arm ACK PASS
+px4-armed ARMED PASS
+px4-takeoff ACK PASS
+px4-goto ACK PASS
+px4-pos 600,0,110 PASS
+px4-hold ACK PASS
+px4-hold-mode HOLD PASS
+px4-return ACK PASS
+px4-return-mode RETURN PASS
+px4-land ACK PASS
+px4-land-mode LAND PASS
+px4-policy failsafe_owner=px4 supervisor=request_only backend=mock PASS
+ros-battery battery 3600 22200 PASS
+ros-image image 4 1 700 PASS
+ros-status status NOMINAL ok PASS
+ros-ack ACK PASS
+ros-nack NACK PASS
+ros-fails 1 PASS
+ros-policy backend=mock topics=battery,image,status,trigger PASS
+TOTAL pass=83/83
