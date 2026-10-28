@@ -1,0 +1,4 @@
+drone_safety_ops/build/
+*.bin
+__pycache__/
+*.pyc

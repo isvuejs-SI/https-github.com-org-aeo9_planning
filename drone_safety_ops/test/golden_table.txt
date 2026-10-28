@@ -1,0 +1,128 @@
+== params ==
+landing.leg_km 44.5 relayed
+landing.batt_endurance_min 14 relayed
+landing.cruise_kmh 40 assumed
+route.leg_km 44.5 relayed
+route.batt_endurance_min 14 relayed
+route.cruise_kmh 40 assumed
+alert.holdback_s 60
+mission.max_days 5
+mission.link_rtl_s 30
+mission.link_abort_s 600
+systemd_watchdog_sec 5 match
+== supervisor ==
+preflight, Remote ID fail -> NO_TAKEOFF | deploy OPEN_COVER
+survey all green -> CONTINUE | deploy BLOCKED
+detector timed out -> HOLD | deploy BLOCKED
+animal threat -> CLIMB_ESCAPE | deploy BLOCKED
+animal + geofence breach -> RTL | deploy BLOCKED
+low battery 22% -> RTL | deploy BLOCKED
+cell overtemp 65C -> LAND | deploy BLOCKED
+GPS lost -> LAND | deploy BLOCKED
+descending at 3 m -> CONTINUE | deploy GEAR_DOWN
+landed but still armed -> CONTINUE | deploy BLOCKED
+landed, disarmed, windy -> CONTINUE | deploy BLOCKED
+landed, disarmed, calm -> CONTINUE | deploy OPEN_COVER
+cover open, calm -> CONTINUE | deploy DEPLOY_PANELS
+== mission_gate ==
+D1 launch, park area       need   80.0 Wh -> NO_GO         outside legal area
+D1 launch, all green       need   80.0 Wh -> GO            ok
+D1 transit, healthy        need  210.0 Wh -> GO            ok
+D2 filming, reserve hit    need  275.0 Wh -> RTL           return reserve
+D2 filming, link 45 s      need  177.5 Wh -> RTL           link gap
+D2 filming, observer lost  need  177.5 Wh -> RTL           no visual observer
+D2 night, good sun         need  340.0 Wh -> GO            ok
+D3 night, cloudy           need  340.0 Wh -> ABORT_MISSION solar cannot cover return
+D3 night, intrusion        need  340.0 Wh -> HOLD_GROUND   intrusion: stay locked
+D4 transit, link lost      need  242.5 Wh -> ABORT_MISSION link gap; link lost
+D5 return, hot cell        need  145.0 Wh -> LAND_NOW      cell overtemp
+D6 still out               need  145.0 Wh -> ABORT_MISSION past day budget
+== day3 ==
+AEO-9 DAY 3 (SIM, placeholder numbers; legal area = outside GRCA NP, VLOS + observer)
+06:30 PREFLIGHT  SoC 90% home  8km gap   0s wind  4 sun   0 need 340.0Wh -> GO            ok | after D2 overnight, SoC 90%
+07:15 TRANSIT    SoC 78% home  5km gap   2s wind  5 sun   0 need 242.5Wh -> GO            ok | en route to filming site
+08:40 FILMING    SoC 70% home  6km gap   1s wind  5 sun   0 need 275.0Wh -> GO            ok | animal: supervisor CLIMB_ESCAPE
+09:30 FILMING    SoC 64% home  4km gap  45s wind  5 sun   0 need 210.0Wh -> RTL           link gap | Starlink/MAVLink gap 45 s
+09:31 FILMING    SoC 63% home  4km gap   2s wind  5 sun   0 need 210.0Wh -> GO            ok | link restored
+13:30 RETURN_CHK SoC 48% home  6km gap   1s wind  6 sun   0 need 275.0Wh -> RTL           return reserve | afternoon reserve check
+19:00 OVERNIGHT  SoC 35% home  8km gap 900s wind  4 sun  40 need 340.0Wh -> ABORT_MISSION solar cannot cover return | cloudy forecast 40 Wh
+22:10 OVERNIGHT  SoC 35% home  8km gap 900s wind 14 sun  40 need 340.0Wh -> ABORT_MISSION intrusion: stay locked; solar cannot cover return; wind: panels stowed | gust 14 m/s + intrusion
+== guard ==
+none 0 0 80 1 1 -> STAY
+animal 25 1 80 1 1 -> WATCH
+animal 10 0 80 1 1 -> DETER
+animal 6 1 80 1 1 -> ESCAPE
+animal 6 1 20 1 1 -> DETER
+animal 6 1 80 0 1 -> DETER
+human 12 0.5 80 1 1 -> DETER
+human 3 0 80 1 1 -> PROP_LOCKOUT
+== alert ==
+ALERT default WATCH WATCH: animal 6 m, closing
+ALERT high DETER DETER: animal 6 m, closing
+ALERT urgent ESCAPE ESCAPE: animal 6 m, closing
+== alert_holdback ==
+t2000 WATCH true
+t2000 WATCH false
+t2059 WATCH false
+t2060 WATCH true
+t2060 STAY false
+ALERT urgent PROP_LOCKOUT person 3 m
+== landing ==
+NO_GO 86.8 11.2 191
+GO 9.8 11.2 21
+HOLD_GROUND 9.8 10.9 21
+NO_GO 9.8 6.7 21
+HOLD_GROUND 9.8 11.2 21
+NO_GO 86.8 11.2 191
+== route ==
+GO_SIM 5.7 20 191
+NO_GO 5.7 20 191
+NO_GO 5.7 20 191
+NO_GO 5.7 20 191
+NO_GO 5.7 20 191
+== px4 ==
+map CONTINUE air -> none latch=0
+map HOLD air -> hold latch=0
+map CLIMB_ESCAPE air -> none latch=0
+map RTL air -> rtl latch=0
+map LAND air -> land latch=0
+map NO_TAKEOFF ground -> no_arm latch=1
+map PROP_LOCKOUT ground -> no_arm latch=1
+map PROP_LOCKOUT air -> land latch=1
+map ESCAPE ground -> none latch=0
+map NO_GO ground -> no_arm latch=1
+map NO_GO air -> land latch=1
+map ABORT_MISSION air -> rtl latch=0
+map ABORT_MISSION ground -> no_arm latch=1
+map LAND_NOW air -> land latch=0
+map HOLD_GROUND ground -> no_arm latch=1
+map DETER ground -> no_arm latch=1
+map GO_SIM ground -> none latch=0
+map STAY ground -> none latch=0
+map WATCH ground -> none latch=0
+cmd hold cmd=176 p1=1 p2=4 p3=3
+cmd rtl cmd=20
+cmd land cmd=21
+cmd no_arm cmd=400 p1=0
+mavsdk hold action.hold
+mavsdk rtl action.return_to_launch
+mavsdk land action.land
+mavsdk no_arm action.disarm
+combine air PROP_LOCKOUT+RTL -> land latch=1
+== log ==
+{"ts":"2026-01-01T00:00:00Z","module":"guard","verdict":"STAY","previous":"","transition":true,"px4":"none","reasons":""}
+{"ts":"2026-01-01T00:00:00Z","module":"guard","verdict":"PROP_LOCKOUT","previous":"STAY","transition":true,"px4":"no_arm","reasons":"person 3 m"}
+{"ts":"2026-01-01T00:00:00Z","module":"guard","verdict":"PROP_LOCKOUT","previous":"PROP_LOCKOUT","transition":false,"px4":"no_arm","reasons":"person 3 m"}
+== watchdog ==
+watchdog_socket ok
+== json ==
+soc 22.5 airborne 1 kind human
+== sensors ==
+sensor unconfigured worst=mission_gate:NO_GO px4=no_arm latch=1 supervisor=NO_TAKEOFF deploy=OPEN_COVER gate=NO_GO:outside legal area; remote id; no visual observer; return reserve guard=STAY landing=NO_GO landing_votes=1 route=NO_GO
+sensor parked_remote_id_fail worst=mission_gate:NO_GO px4=no_arm latch=1 supervisor=NO_TAKEOFF deploy=OPEN_COVER gate=NO_GO:remote id guard=STAY landing=NO_GO landing_votes=1 route=GO_SIM
+sensor survey_green worst=supervisor:CONTINUE px4=none latch=0 supervisor=CONTINUE deploy=BLOCKED gate=GO:ok guard=STAY landing=NO_GO landing_votes=0 route=GO_SIM
+sensor air_low_battery worst=supervisor:RTL px4=rtl latch=0 supervisor=RTL deploy=BLOCKED gate=RTL:return reserve guard=STAY landing=NO_GO landing_votes=0 route=GO_SIM
+sensor air_link_lost worst=mission_gate:ABORT_MISSION px4=rtl latch=0 supervisor=CONTINUE deploy=BLOCKED gate=ABORT_MISSION:link gap; link lost guard=STAY landing=NO_GO landing_votes=0 route=GO_SIM
+sensor parked_person_3m worst=guard:PROP_LOCKOUT px4=no_arm latch=1 supervisor=CONTINUE deploy=OPEN_COVER gate=GO:ok guard=PROP_LOCKOUT landing=NO_GO landing_votes=1 route=GO_SIM
+sensor air_person_3m worst=guard:PROP_LOCKOUT px4=land latch=1 supervisor=CONTINUE deploy=BLOCKED gate=GO:ok guard=PROP_LOCKOUT landing=NO_GO landing_votes=0 route=GO_SIM
+sensor overnight_intrusion worst=landing:NO_GO px4=no_arm latch=1 supervisor=CONTINUE deploy=BLOCKED gate=ABORT_MISSION:intrusion: stay locked; solar cannot cover return; wind: panels stowed guard=DETER landing=NO_GO landing_votes=1 route=GO_SIM

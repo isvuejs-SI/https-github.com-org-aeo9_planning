@@ -1,0 +1,16 @@
+[Unit]
+Description=Drone safety ops supervisor (requests only; PX4 owns failsafes)
+After=network-online.target
+
+[Service]
+Type=notify
+NotifyAccess=main
+WatchdogSec=5
+Restart=on-failure
+Environment=NTFY_TOPIC=
+Environment=DRONE_SAFETY_PARAMS=/opt/drone_safety_ops/share/drone_safety_ops/config/params.yaml
+Environment=DRONE_SAFETY_LOG_DIR=/mnt/nvme/drone_safety_ops
+ExecStart=/usr/bin/python3 -m drone_safety_ops.nodes.safety_supervisor_node
+
+[Install]
+WantedBy=multi-user.target
