@@ -1,0 +1,7 @@
+# Illustrative placeholders only. Not AEO-9 hardware specs.
+energy_dwh: {capacity: 4000, launch_reserve: 800, flight_floor: 600}
+draw_dwh_per_min: {cruise: 100, film: 90, escape: 140, idle_day: 1, uplink: 4}
+solar: {peak_dwh_per_min: 10, sunrise_min: 390, sunset_min: 1080, noon_min: 735}
+flight_window_min: {open: 480, close: 1020, last_launch: 840}
+limits: {wind_max_ms: 11, fence_soft_m: 1200, fence_hard_m: 1500, min_agl_m: 40, alt_m: 110}
+camps_m: [0, 6000, 12000]

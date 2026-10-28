@@ -1,0 +1,20 @@
+# Mirrors the constants in failsafe_sim.py / failsafe_sim.cpp (units: mm, ms, 0.01 %).
+# The demo hard-codes them; CI should load this file and fail if they drift.
+tick_ms: 20
+geofence_radius_mm: 120000
+cruise_alt_mm: 30000
+escape_climb_mm: 15000
+battery_low: 2500
+battery_critical: 1500
+gps_loss_ms: 2000
+link_loss_ms: 3000
+detector_stale_ms: 200
+detector_stale_rtl_ms: 4000
+animal_confirm_frames: 3
+animal_conf_min_permille: 600
+mission_end_tick: 3000
+land_detect_alt_mm: 300
+landing_gear_down_alt_mm: 5000
+cover_open_ticks: 150
+panel_deploy_ticks: 250
+seed_base: 2026

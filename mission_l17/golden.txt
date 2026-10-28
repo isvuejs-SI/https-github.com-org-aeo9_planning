@@ -1,0 +1,39 @@
+AEO-9 5-day mission sim (illustrative numbers, seed 2026+id)
+scenario 0 nominal
+  day 1 leg 0 launch 08:00 land 08:27 used=236Wh solar=294Wh soc launch=97% day_end=87% animals=1 escapes=1
+  day 2 leg 1 launch 08:18 land 08:43 used=208Wh solar=296Wh soc launch=85% day_end=82% animals=1 escapes=0
+  day 3 leg 2 launch 08:00 land 08:23 used=180Wh solar=268Wh soc launch=79% day_end=76% animals=1 escapes=1
+  day 4 leg 3 launch 09:02 land 09:25 used=200Wh solar=254Wh soc launch=76% day_end=63% animals=1 escapes=1
+  day 5 leg 4 launch 10:06 land 10:24 used=145Wh solar=293Wh soc launch=69% day_end=72% animals=0 escapes=0
+  RESULT nominal home=1 night_fly=0 min_soc=25% fence=0 max_y=0m agl=50..110m PASS
+scenario 1 cloudy_day1
+  day 1 leg 0 launch 08:00 land 08:25 used=208Wh solar=87Wh soc launch=95% day_end=42% animals=0 escapes=0
+  day 2 SCRUB (charging) soc_end=86.3% solar=263Wh
+  day 3 leg 1 launch 08:51 land 09:16 used=208Wh solar=261Wh soc launch=85% day_end=72% animals=0 escapes=0
+  day 4 drop optional leg 2 (behind schedule)
+  day 4 leg 3 launch 09:51 land 10:12 used=172Wh solar=276Wh soc launch=76% day_end=71% animals=0 escapes=0
+  day 5 leg 4 launch 08:36 land 08:54 used=145Wh solar=278Wh soc launch=69% day_end=76% animals=0 escapes=0
+  RESULT cloudy_day1 home=1 night_fly=0 min_soc=32% fence=0 max_y=0m agl=50..110m PASS
+scenario 2 wind_day2
+  day 1 leg 0 launch 08:00 land 08:25 used=208Wh solar=295Wh soc launch=97% day_end=94% animals=1 escapes=0
+  day 2 SCRUB (wind 14 m/s) soc_end=96.8% solar=279Wh
+  day 3 leg 1 launch 08:00 land 08:25 used=208Wh solar=301Wh soc launch=94% day_end=92% animals=0 escapes=0
+  day 4 drop optional leg 2 (behind schedule)
+  day 4 leg 3 launch 08:00 land 08:21 used=172Wh solar=302Wh soc launch=90% day_end=96% animals=0 escapes=0
+  day 5 leg 4 launch 08:00 land 08:18 used=145Wh solar=297Wh soc launch=94% day_end=96% animals=0 escapes=0
+  RESULT wind_day2 home=1 night_fly=0 min_soc=41% fence=0 max_y=0m agl=50..110m PASS
+scenario 3 animal_heavy
+  day 1 leg 0 launch 08:00 land 08:25 used=208Wh solar=304Wh soc launch=97% day_end=96% animals=0 escapes=0
+  day 2 leg 1 launch 08:00 land 08:25 used=208Wh solar=281Wh soc launch=93% day_end=88% animals=3 escapes=0
+  day 3 leg 2 launch 08:00 land 08:27 used=236Wh solar=270Wh soc launch=84% day_end=69% animals=9 escapes=2
+  day 4 leg 3 launch 10:27 land 10:50 used=200Wh solar=255Wh soc launch=76% day_end=56% animals=2 escapes=1
+  day 5 leg 4 launch 11:09 land 11:29 used=183Wh solar=269Wh soc launch=69% day_end=50% animals=2 escapes=2
+  RESULT animal_heavy home=1 night_fly=0 min_soc=23% fence=0 max_y=0m agl=50..110m PASS
+scenario 4 fence_drift
+  day 1 leg 0 launch 08:00 land 08:25 used=208Wh solar=295Wh soc launch=97% day_end=94% animals=1 escapes=0
+  day 2 leg 1 launch 08:00 land 08:25 used=208Wh solar=278Wh soc launch=91% day_end=84% animals=3 escapes=0
+  day 3 leg 2 launch 08:00 land 08:25 used=208Wh solar=281Wh soc launch=81% day_end=75% animals=2 escapes=1
+  day 4 leg 3 launch 09:16 land 09:37 used=172Wh solar=258Wh soc launch=76% day_end=70% animals=1 escapes=0
+  day 5 leg 4 launch 08:55 land 09:13 used=145Wh solar=277Wh soc launch=69% day_end=75% animals=0 escapes=0
+  RESULT fence_drift home=1 night_fly=0 min_soc=29% fence=0 max_y=1190m agl=50..110m PASS
+TOTAL pass=5/5

@@ -1,0 +1,10 @@
+# AEO-9 Day 3 gate. Illustrative placeholders only, NOT AEO-9 or vendor specs. Units dWh (0.1 Wh), dm/s, m, minutes.
+energy_dwh: {capacity: 4000, launch_reserve: 800, flight_floor: 600}
+draw_dwh_per_min: {cruise: 100, film: 70, escape: 140, idle: 2, sleep: 1, uplink: 4}
+solar: {peak_dwh_per_min: 10, sunrise_min: 390, sunset_min: 1080, noon_min: 735}
+window_min: {open: 480, last_launch: 840, upload_deadline: 1200}
+film: {minutes: 15, max_escapes: 3, cam_trigger_fail_limit: 3}
+wind_dms: {launch_max: 110, gust_abort: 140}
+terrain: {alt_above_camp_m: 75, min_agl_m: 40}
+upload: {need_min: 60}
+day4: {need_dwh: 2280}
