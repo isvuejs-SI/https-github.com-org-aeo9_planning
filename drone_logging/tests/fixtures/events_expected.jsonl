@@ -1,0 +1,3 @@
+{"kind":"mode","t_mono_ns":10,"t_wall":"2026-10-24T00:00:00Z","from":"AUTO","to":"RTL","reason":"low_battery"}
+{"kind":"failsafe","t_mono_ns":11,"t_wall":"2026-10-24T00:00:01Z","from":"none","to":"RTL","reason":"geofence"}
+{"kind":"failsafe","t_mono_ns":12,"t_wall":"2026-10-24T00:00:02Z","from":"none","to":"land","reason":"a \"b\" \\ c"}

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>drone_logging</name>
+  <version>0.1.0</version>
+  <description>Flight event log, rosbag2 MCAP recorder launch, and the Starlink landing upload queue.</description>
+  <maintainer email="dev@example.com">drone_logging</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>drone_ota</depend>
+  <depend>libssl-dev</depend>
+  <test_depend>gtest</test_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

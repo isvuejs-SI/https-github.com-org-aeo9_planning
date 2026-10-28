@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>drone_telemetry</name>
+  <version>0.1.0</version>
+  <description>Low-rate Jetson and flight summary kept under 1 kB/s.</description>
+  <maintainer email="dev@example.com">drone_telemetry</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>drone_ota</depend>
+  <test_depend>gtest</test_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

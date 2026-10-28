@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>drone_ota</name>
+  <version>0.1.0</version>
+  <description>OTA gate, Ed25519 signed app bundles, A/B slots, and boot health. Does not update Pixhawk firmware.</description>
+  <maintainer email="dev@example.com">drone_ota</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>libssl-dev</depend>
+  <test_depend>gtest</test_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

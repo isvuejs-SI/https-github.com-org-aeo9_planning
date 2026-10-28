@@ -1,0 +1,34 @@
+# Example thresholds from the 2026-10-18 DevOps design and the 2026-10-24 lesson.
+# They are examples, not measured limits. Code reads this file and does not
+# keep its own copies of these numbers.
+
+gate:
+  # Design section 7: battery >= 60 %, NVMe free >= 20 GB, Jetson <= 70 C.
+  min_batt_pct: 60.0
+  min_nvme_free_gb: 20.0
+  max_jetson_c: 70.0
+
+health:
+  # Design section 4.6: roll back after 2-3 failed boots. This example uses 3.
+  boot_loop_rollback_threshold: 3
+  # Design section 3.2: time offset alert above 50 ms.
+  max_time_offset_ms: 50
+  # Design section 3.2: a critical node missing for 3 s.
+  node_timeout_s: 3
+  heartbeat_timeout_s: 3
+  sensor_timeout_s: 3
+  # Design section 4.6: health check window, 5 minutes.
+  health_window_s: 300
+  # Host builds have no CUDA. Set true on the Jetson image.
+  tensorrt_required: false
+  required_nodes:
+    - failsafe
+    - logger
+    - telemetry
+  required_sensors:
+    - camera
+    - mid360
+
+hardware:
+  # Companion computer this bundle may install onto. Not the Pixhawk.
+  id: jetson-orin

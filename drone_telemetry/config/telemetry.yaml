@@ -1,0 +1,17 @@
+# Example telemetry thresholds. Design sections 3.2 and 3.3.
+# The summary must stay strictly under max_bytes_per_sec at publish_hz.
+
+telemetry:
+  # Section 3.3: in-flight summary under 1 kB/s.
+  max_bytes_per_sec: 1024
+  publish_hz: 1
+  # Section 7 uses 70 C as the OTA ceiling. Above that the summary warns.
+  temp_warn_c: 70.0
+  # Section 3.2 example: temperature alert above 80 C.
+  temp_fail_c: 80.0
+  # Section 3.2 example: NVMe free below 15 %.
+  nvme_free_warn_pct: 15.0
+  # Section 3.2 example: wear above 80 %.
+  nvme_wear_warn_pct: 80.0
+  # Keeps a worst-case packet inside the byte budget. Example, not measured.
+  max_field_len: 32

@@ -1,0 +1,59 @@
+# Example logging, storage, and Starlink landing-upload values.
+# Sources: 2026-10-18 design sections 2.2-2.4 and the 2026-10-24 lesson.
+# Examples, not measured limits.
+
+priorities:
+  # Landing pass order: events/failsafe, Pixhawk log, summary, then other bags.
+  events: 0
+  failsafe: 0
+  pixhawk: 1
+  summary: 2
+  bag: 3
+  # Video and LiDAR wait for a fast link. They sort after bags when included.
+  video: 4
+  lidar: 4
+  other: 9
+
+landing_skip:
+  - video
+  - lidar
+
+retained_categories:
+  # Never auto-deleted, even after the upload is verified.
+  - events
+  - failsafe
+  - pixhawk
+  - ota
+
+upload:
+  # Lesson 9 exercise: retry a hash mismatch up to 3 times, then STUCK.
+  max_retries: 3
+  # Design section 2.4 example: link up and stable before the queue runs.
+  link_stable_s: 60
+
+storage:
+  # Design section 2.2-2.3 examples.
+  reserve_free_percent: 20
+  delete_when_free_below_percent: 25
+  stop_nonessential_free_percent: 10
+  nvme_size_gb: 1000
+  os_and_staging_gb: 100
+  # Section 2.2 prose says about 700 GB and about 30 flights.
+  # floor((1000 * 80 / 100 - 100) / 22) is 31 with these example inputs.
+  est_gb_per_flight: 22
+  lidar_mb_s: 5.0
+  video_mb_s: 6.0
+  thermal_mb_s: 1.0
+  other_mb_s: 0.1
+  # Example split size so a power cut only loses the last chunk. Not measured.
+  max_bag_size_mb: 4096
+
+topics:
+  - /mavros/state
+  - /mavros/battery
+  - /failsafe/events
+  - /detection/decisions
+  - /bms/status
+  - /mppt/status
+  - /camera/trigger
+  - /livox/lidar
