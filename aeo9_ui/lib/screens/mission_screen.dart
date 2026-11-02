@@ -146,15 +146,17 @@ class _CompactMission extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mapHeight = MediaQuery.sizeOf(context).height * 0.38;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // Extra top inset so Dynamic Island / notch preview does not cover brand.
+        const SizedBox(height: 28),
         _TopBar(snap: snap),
         const SizedBox(height: 10),
-        Expanded(flex: 5, child: _MapPanel(snap: snap)),
+        SizedBox(height: mapHeight, child: _MapPanel(snap: snap)),
         const SizedBox(height: 10),
         Expanded(
-          flex: 4,
           child: _SidePanel(
             snap: snap,
             onRequest: onRequest,
@@ -180,58 +182,83 @@ class _TopBar extends StatelessWidget {
       FailsafeState.land => Aeo9Colors.danger,
     };
 
-    return Row(
-      children: [
-        Text(
-          'AEO-9',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+    final narrow = MediaQuery.sizeOf(context).width < 420;
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: SizedBox(
+        width: MediaQuery.sizeOf(context).width -
+            (narrow ? 32 : 32), // match outer horizontal padding
+        child: Row(
+          children: [
+            Text(
+              'AEO-9',
+              style: TextStyle(
+                fontFamily: Theme.of(context).textTheme.titleLarge?.fontFamily,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -1.0,
+                fontSize: narrow ? 20 : 28,
+                color: Aeo9Colors.ink,
               ),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          'Mission',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Aeo9Colors.stone,
-                fontWeight: FontWeight.w500,
-              ),
-        ),
-        const Spacer(),
-        if (snap.simOnly)
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: Aeo9Colors.warn.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Aeo9Colors.warn.withValues(alpha: 0.35)),
             ),
-            child: Text(
-              'SIM ONLY',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            if (!narrow) ...[
+              const SizedBox(width: 10),
+              const Text(
+                'Mission',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Aeo9Colors.stone,
+                ),
+              ),
+            ],
+            const Spacer(),
+            if (snap.simOnly)
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: EdgeInsets.symmetric(
+                  horizontal: narrow ? 8 : 10,
+                  vertical: narrow ? 5 : 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Aeo9Colors.warn.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Aeo9Colors.warn.withValues(alpha: 0.35),
+                  ),
+                ),
+                child: Text(
+                  narrow ? 'SIM' : 'SIM ONLY',
+                  style: TextStyle(
                     color: Aeo9Colors.warn,
                     fontWeight: FontWeight.w800,
+                    fontSize: narrow ? 11 : 13,
                   ),
-            ),
-          ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: stateColor.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: stateColor.withValues(alpha: 0.4)),
-          ),
-          child: Text(
-            snap.failsafeLabel,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                ),
+              ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: narrow ? 8 : 12,
+                vertical: narrow ? 5 : 8,
+              ),
+              decoration: BoxDecoration(
+                color: stateColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: stateColor.withValues(alpha: 0.4)),
+              ),
+              child: Text(
+                snap.failsafeLabel,
+                style: TextStyle(
                   color: stateColor,
                   fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
+                  letterSpacing: narrow ? 0.6 : 1.2,
+                  fontSize: narrow ? 12 : 16,
                 ),
-          ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -337,123 +364,113 @@ class _SidePanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Aeo9Colors.stone.withValues(alpha: 0.08)),
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Flight picture',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Hexacopter · Pixhawk · autonomous legs',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Aeo9Colors.stone,
-                          ),
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        StatusChip(
-                          label: 'Altitude',
-                          value: '${snap.altitudeM.toStringAsFixed(0)} m',
-                          tone: StatusTone.good,
-                        ),
-                        StatusChip(
-                          label: 'Speed',
-                          value: '${snap.speedMs.toStringAsFixed(1)} m/s',
-                        ),
-                        StatusChip(
-                          label: 'Battery',
-                          value: '${snap.batteryPct.toStringAsFixed(0)}%',
-                          tone: snap.batteryPct < 30
-                              ? StatusTone.warn
-                              : StatusTone.good,
-                        ),
-                        StatusChip(
-                          label: 'Link',
-                          value: '${snap.linkPct.toStringAsFixed(0)}%',
-                          tone: snap.linkPct < 60
-                              ? StatusTone.warn
-                              : StatusTone.good,
-                        ),
-                        StatusChip(
-                          label: 'Wind',
-                          value: '${snap.windMs.toStringAsFixed(1)} m/s',
-                        ),
-                        StatusChip(
-                          label: 'Escapes',
-                          value: '${snap.animalEscapes}/3',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
-                    _GoNoGoCard(snap: snap),
-                    const SizedBox(height: 12),
-                    _LinkRow(snap: snap),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Supervisor requests',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _ActionButton(
-                            label: 'HOLD',
-                            onPressed: () => onRequest('HOLD'),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _ActionButton(
-                            label: 'RTL',
-                            onPressed: () => onRequest('RTL'),
-                            emphasize: true,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _ActionButton(
-                            label: 'LAND',
-                            onPressed: () => onRequest('LAND'),
-                            danger: true,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (lastRequest != null) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        'Last request: $lastRequest',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Aeo9Colors.stone,
-                            ),
-                      ),
-                    ],
-                    const Spacer(),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Screen 1/5 · features 1–6 + glanceables from sensing, power, link',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Aeo9Colors.stone.withValues(alpha: 0.8),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Flight picture',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-          );
-        },
+            const SizedBox(height: 4),
+            Text(
+              'Hexacopter · Pixhawk · autonomous legs',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Aeo9Colors.stone,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                StatusChip(
+                  label: 'Altitude',
+                  value: '${snap.altitudeM.toStringAsFixed(0)} m',
+                  tone: StatusTone.good,
+                ),
+                StatusChip(
+                  label: 'Speed',
+                  value: '${snap.speedMs.toStringAsFixed(1)} m/s',
+                ),
+                StatusChip(
+                  label: 'Battery',
+                  value: '${snap.batteryPct.toStringAsFixed(0)}%',
+                  tone: snap.batteryPct < 30
+                      ? StatusTone.warn
+                      : StatusTone.good,
+                ),
+                StatusChip(
+                  label: 'Link',
+                  value: '${snap.linkPct.toStringAsFixed(0)}%',
+                  tone: snap.linkPct < 60
+                      ? StatusTone.warn
+                      : StatusTone.good,
+                ),
+                StatusChip(
+                  label: 'Wind',
+                  value: '${snap.windMs.toStringAsFixed(1)} m/s',
+                ),
+                StatusChip(
+                  label: 'Escapes',
+                  value: '${snap.animalEscapes}/3',
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            _GoNoGoCard(snap: snap),
+            const SizedBox(height: 12),
+            _LinkRow(snap: snap),
+            const SizedBox(height: 12),
+            Text(
+              'Supervisor requests',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: _ActionButton(
+                    label: 'HOLD',
+                    onPressed: () => onRequest('HOLD'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _ActionButton(
+                    label: 'RTL',
+                    onPressed: () => onRequest('RTL'),
+                    emphasize: true,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _ActionButton(
+                    label: 'LAND',
+                    onPressed: () => onRequest('LAND'),
+                    danger: true,
+                  ),
+                ),
+              ],
+            ),
+            if (lastRequest != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Last request: $lastRequest',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Aeo9Colors.stone,
+                    ),
+              ),
+            ],
+            const SizedBox(height: 16),
+            Text(
+              'Screen 1/5 · features 1–6 + glanceables from sensing, power, link',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Aeo9Colors.stone.withValues(alpha: 0.8),
+                  ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -514,12 +531,12 @@ class _LinkRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
+      spacing: 12,
+      runSpacing: 8,
       children: [
         _LinkDot(label: 'Starlink', up: snap.starlinkUp),
-        const SizedBox(width: 12),
         _LinkDot(label: 'Radio', up: snap.radioUp),
-        const SizedBox(width: 12),
         _LinkDot(label: 'Solar stowed', up: !snap.solarDeployed),
       ],
     );
